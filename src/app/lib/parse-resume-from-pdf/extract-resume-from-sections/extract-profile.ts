@@ -23,15 +23,21 @@ export const matchEmail = (item: TextItem) => item.text.match(/\S+@\S+\.\S+/);
 const hasAt = (item: TextItem) => item.text.includes("@");
 
 // Phone
-// Simple phone regex that matches (xxx)-xxx-xxxx where () and - are optional, - can also be space
-export const matchPhone = (item: TextItem) =>
-  item.text.match(/\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}/);
+// Matches (xxx)-xxx-xxxx (US, () and - optional) and +xxxxxxxxxx (international)
+export const matchPhone = (item: TextItem) => {
+  // Try international format first (+ followed by 8+ digits) to avoid US regex
+  // grabbing a substring of a longer international number
+  const intl = item.text.match(/\+\d[\d\s-]{7,}\d/);
+  if (intl) return intl;
+  return item.text.match(/\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}/);
+};
 const hasParenthesis = (item: TextItem) => /\([0-9]+\)/.test(item.text);
 
 // Location
-// Simple location regex that matches "<City>, <ST>"
+// Matches "<City>, <ST>" (US) and "<City>, <Country>" (international)
 export const matchCityAndState = (item: TextItem) =>
-  item.text.match(/[A-Z][a-zA-Z\s]+, [A-Z]{2}/);
+  item.text.match(/[A-Z][a-zA-Z\s]*, ?[A-Z]{2}\b/) ||
+  item.text.match(/[A-Z][a-zA-Z\s]*, ?[A-Z][a-z]{2,}/);
 
 // Url
 // Simple url regex that matches "xxx.xxx/xxx" (xxx = anything not space)

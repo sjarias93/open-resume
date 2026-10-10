@@ -26,14 +26,14 @@ import {
  */
 
 // prettier-ignore
-const SCHOOLS = ['College', 'University', 'Institute', 'School', 'Academy', 'BASIS', 'Magnet']
+const SCHOOLS = ['College', 'University', 'Universiti', 'Universidad', 'Universitas', 'Université', 'Universität', 'Institute', 'Institut', 'School', 'Academy', 'BASIS', 'Magnet']
 const hasSchool = (item: TextItem) =>
   SCHOOLS.some((school) => item.text.includes(school));
 // prettier-ignore
-const DEGREES = ["Associate", "Bachelor", "Master", "PhD", "Ph."];
+const DEGREES = ["Associate", "Bachelor", "Master", "PhD", "Ph.", "Diploma", "Licenciatura", "Bachiller"];
 const hasDegree = (item: TextItem) =>
   DEGREES.some((degree) => item.text.includes(degree)) ||
-  /[ABM][A-Z\.]/.test(item.text); // Match AA, B.S., MBA, etc.
+  /\b(?:[A-Z]{2,3}|[A-Z]\.[A-Z]\.?)\b/.test(item.text); // Match AA, B.S., MBA, etc.
 const matchGPA = (item: TextItem) => item.text.match(/[0-4]\.\d{1,2}/);
 const matchGrade = (item: TextItem) => {
   const grade = parseFloat(item.text);
